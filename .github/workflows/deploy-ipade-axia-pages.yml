@@ -1,11 +1,6 @@
 name: Deploy IPADE AXIA landing to GitHub Pages
 
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "docs/ipade-axia/**"
-      - ".github/workflows/deploy-ipade-axia-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -28,8 +23,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
