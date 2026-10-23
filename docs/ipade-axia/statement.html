@@ -3,54 +3,115 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Open Statement VALIA</title>
-  <meta name="description" content="El costo empresarial del estrés financiero y la infraestructura AXIA.">
+  <title>Open Statement VALIA · 8 láminas</title>
+  <meta name="description" content="Open Statement de VALIA en carrusel de 8 láminas.">
   <style>
-    :root{--black:#07080c;--white:#f5f5f2;--muted:#a9abb5;--lime:#c9ff00;--line:rgba(255,255,255,.14)}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;background:var(--black);color:var(--white);font-family:Inter,Arial,sans-serif}
-    .bar{position:sticky;top:0;z-index:20;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:10px max(16px,calc((100vw - 1180px)/2));background:rgba(7,8,12,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    :root{--lime:#c9ff00;--bg:#08090d;--panel:#0f1118;--line:rgba(255,255,255,.14);--muted:#b8bac4}
+    *{box-sizing:border-box} html,body{margin:0} body{background:var(--bg);color:#fff;font-family:Inter,Arial,sans-serif}
+    .bar{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(7,8,12,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
     .brand{font-weight:900;letter-spacing:3px;font-size:22px;color:#fff;text-decoration:none}
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border-radius:999px;text-decoration:none;font-size:13px;font-weight:800}
-    .ghost{border:1px solid rgba(255,255,255,.42);color:#fff}
-    .primary{background:var(--lime);color:#111}
-    .intro{max-width:1180px;margin:0 auto;padding:42px 20px 22px;text-align:center}
-    .intro span{display:block;color:var(--lime);font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
-    .intro h1{font-size:clamp(32px,5vw,62px);line-height:1.04;letter-spacing:-2px;margin:12px 0}
-    .intro p{max-width:760px;margin:0 auto;color:var(--muted);font-size:18px}
-    .viewer{max-width:1180px;margin:0 auto;padding:20px 20px 70px}
-    .viewer img{display:block;width:100%;height:auto;border-radius:20px;box-shadow:0 30px 90px rgba(0,0,0,.42)}
-    .cta{max-width:900px;margin:0 auto 80px;padding:46px 24px;text-align:center;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,rgba(109,36,217,.34),rgba(201,255,0,.08))}
-    .cta h2{font-size:clamp(30px,4vw,52px);line-height:1.08;margin:0 0 14px}
-    .cta p{color:#c8c8cf;font-size:18px;margin:0 auto 24px;max-width:680px}
-    @media(max-width:640px){.bar{align-items:flex-start}.brand{font-size:18px;padding-top:8px}.actions{gap:7px}.btn{min-height:38px;padding:0 12px;font-size:12px}.intro{padding-top:30px}.viewer{padding-left:10px;padding-right:10px}.viewer img{border-radius:10px}}
+    .actions{display:flex;gap:10px;align-items:center}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border-radius:999px;text-decoration:none;font-size:13px;font-weight:800;border:1px solid transparent}
+    .ghost{border-color:rgba(255,255,255,.28);color:#fff}.primary{background:var(--lime);color:#111}
+    .wrap{max-width:1200px;margin:0 auto;padding:28px 16px 90px}
+    .intro{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:18px}
+    .intro h1{margin:0;font-size:clamp(28px,4vw,46px)} .intro p{margin:8px 0 0;color:var(--muted);max-width:700px;line-height:1.5}
+    .counter{color:var(--muted);font-size:13px;white-space:nowrap}
+    .viewer{background:linear-gradient(180deg,#111521,#0d0f15);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.36)}
+    .stage{position:relative;background:#0b0d12;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center}
+    .slide{display:none;width:100%;height:100%}.slide.active{display:block}.slide img{display:block;width:100%;height:100%;object-fit:contain;background:#111}
+    .navBtn{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(8,9,13,.66);backdrop-filter:blur(8px);color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .navBtn:hover{background:rgba(18,20,30,.9)} .prev{left:16px}.next{right:16px}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 18px;background:var(--panel);border-top:1px solid var(--line)}
+    .toolbarLeft{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.badge{font-size:12px;color:#111;background:var(--lime);padding:6px 10px;border-radius:999px;font-weight:900}
+    .small{font-size:13px;color:var(--muted)}
+    .dots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:18px 10px 4px}.dot{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.18);border:none;cursor:pointer;padding:0}.dot.active{background:var(--lime)}
+    .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.thumb{background:#0e1118;border:1px solid var(--line);border-radius:14px;padding:8px;cursor:pointer}.thumb img{display:block;width:100%;height:auto;border-radius:8px}.thumb.active{outline:2px solid var(--lime)}
+    .wa-float{position:fixed;z-index:35;right:18px;bottom:18px;background:var(--lime);color:#111;border-radius:999px;padding:14px 20px;text-decoration:none;font-weight:900;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+    @media(max-width:900px){.thumbs{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:640px){.bar{height:58px;padding:0 12px}.brand{font-size:18px}.wrap{padding:22px 10px 84px}.intro{flex-direction:column;align-items:start}.viewer{border-radius:16px}.navBtn{width:42px;height:42px;font-size:24px}.prev{left:10px}.next{right:10px}.toolbar{flex-direction:column;align-items:start}.thumbs{grid-template-columns:repeat(2,1fr);gap:10px}.wa-float{right:12px;bottom:12px;padding:12px 16px}}
   </style>
 </head>
 <body>
   <header class="bar">
     <a class="brand" href="index.html">VΛLIA</a>
     <div class="actions">
-      <a class="btn ghost" href="Opening_Statement_VALIA.pdf" target="_blank" rel="noopener">Abrir PDF</a>
-      <a class="btn primary" href="https://wa.me/525610826034?text=Hola%20Alberto%2C%20vi%20el%20Open%20Statement%20de%20AXIA%20y%20quiero%20evaluar%20si%20puede%20tener%20sentido%20para%20mi%20empresa.%20Me%20gustar%C3%ADa%20coordinar%20un%20Diagn%C3%B3stico%20AXIA%20de%2020%20minutos." target="_blank" rel="noopener">Hablar con Alberto</a>
+      <a class="btn ghost" href="index.html#caso">Volver</a>
+      <a class="btn primary whatsapp-link" data-wa-intent="empresa" href="#" target="_blank" rel="noopener">Evaluar AXIA</a>
     </div>
   </header>
-
-  <section class="intro">
-    <span>VALIA · OPEN STATEMENT</span>
-    <h1>El caso, completo y visible.</h1>
-    <p>Ocho láminas sobre el costo empresarial del estrés financiero y la infraestructura AXIA.</p>
-  </section>
-
-  <main class="viewer">
-    <img src="Opening_Statement_VALIA.webp" alt="Open Statement VALIA: ocho láminas sobre productividad, rotación, bienestar financiero y AXIA">
+  <main class="wrap">
+    <section class="intro">
+      <div>
+        <div class="small">VALIA · OPEN STATEMENT</div>
+        <h1>El caso completo en 8 láminas</h1>
+        <p>Recorre el caso completo en ocho láminas. Usa las flechas, las miniaturas o desliza en tu teléfono.</p>
+      </div>
+      <div class="counter"><span id="slideCounter">1 / 8</span></div>
+    </section>
+    <section class="viewer" aria-label="Carrusel Open Statement">
+      <div class="stage" id="stage">
+        <button class="navBtn prev" id="prevBtn" aria-label="Lámina anterior">‹</button>
+        <div class="slide active"><img src="assets/opening/page-1.webp" alt="Open Statement VALIA lámina 1"></div>
+        <div class="slide"><img src="assets/opening/page-2.webp" alt="Open Statement VALIA lámina 2"></div>
+        <div class="slide"><img src="assets/opening/page-3.webp" alt="Open Statement VALIA lámina 3"></div>
+        <div class="slide"><img src="assets/opening/page-4.webp" alt="Open Statement VALIA lámina 4"></div>
+        <div class="slide"><img src="assets/opening/page-5.webp" alt="Open Statement VALIA lámina 5"></div>
+        <div class="slide"><img src="assets/opening/page-6.webp" alt="Open Statement VALIA lámina 6"></div>
+        <div class="slide"><img src="assets/opening/page-7.webp" alt="Open Statement VALIA lámina 7"></div>
+        <div class="slide"><img src="assets/opening/page-8.webp" alt="Open Statement VALIA lámina 8"></div>
+        <button class="navBtn next" id="nextBtn" aria-label="Siguiente lámina">›</button>
+      </div>
+      <div class="toolbar">
+        <div class="toolbarLeft">
+          <span class="badge">8 LÁMINAS</span>
+          <span class="small">Usa flechas, miniaturas o desliza si estás en móvil.</span>
+        </div>
+        <a class="btn primary whatsapp-link" data-wa-intent="empresa" href="#" target="_blank" rel="noopener">Hablar con Alberto</a>
+      </div>
+    </section>
+    <div class="dots" id="dots"></div>
+    <div class="thumbs" id="thumbs">
+      <button class="thumb active" data-slide="0"><img src="assets/opening/page-1.webp" alt="Miniatura lámina 1"></button>
+      <button class="thumb" data-slide="1"><img src="assets/opening/page-2.webp" alt="Miniatura lámina 2"></button>
+      <button class="thumb" data-slide="2"><img src="assets/opening/page-3.webp" alt="Miniatura lámina 3"></button>
+      <button class="thumb" data-slide="3"><img src="assets/opening/page-4.webp" alt="Miniatura lámina 4"></button>
+      <button class="thumb" data-slide="4"><img src="assets/opening/page-5.webp" alt="Miniatura lámina 5"></button>
+      <button class="thumb" data-slide="5"><img src="assets/opening/page-6.webp" alt="Miniatura lámina 6"></button>
+      <button class="thumb" data-slide="6"><img src="assets/opening/page-7.webp" alt="Miniatura lámina 7"></button>
+      <button class="thumb" data-slide="7"><img src="assets/opening/page-8.webp" alt="Miniatura lámina 8"></button>
+    </div>
   </main>
-
-  <section class="cta">
-    <h2>¿Vale la pena revisarlo para tu empresa?</h2>
-    <p>Escríbele directamente a Alberto para coordinar un diagnóstico de 20 minutos. Sin Calendly, sin intermediarios y sin compromiso comercial.</p>
-    <a class="btn primary" href="https://wa.me/525610826034?text=Hola%20Alberto%2C%20vi%20el%20Open%20Statement%20de%20AXIA%20y%20quiero%20evaluar%20si%20puede%20tener%20sentido%20para%20mi%20empresa.%20Me%20gustar%C3%ADa%20coordinar%20un%20Diagn%C3%B3stico%20AXIA%20de%2020%20minutos." target="_blank" rel="noopener">Hablar con Alberto por WhatsApp</a>
-  </section>
+  <a class="wa-float whatsapp-link" data-wa-intent="empresa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+  <script src="app.js"></script>
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const counter = document.getElementById('slideCounter');
+    const thumbs = Array.from(document.querySelectorAll('.thumb'));
+    const dotsWrap = document.getElementById('dots');
+    let current = 0;
+    slides.forEach((_, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'dot' + (idx===0 ? ' active' : '');
+      btn.setAttribute('aria-label', `Ir a lámina ${idx+1}`);
+      btn.addEventListener('click', ()=>goTo(idx));
+      dotsWrap.appendChild(btn);
+    });
+    const dots = Array.from(document.querySelectorAll('.dot'));
+    function render(){
+      slides.forEach((s,i)=>s.classList.toggle('active', i===current));
+      thumbs.forEach((t,i)=>t.classList.toggle('active', i===current));
+      dots.forEach((d,i)=>d.classList.toggle('active', i===current));
+      counter.textContent = `${current+1} / ${slides.length}`;
+    }
+    function goTo(i){ current = (i + slides.length) % slides.length; render(); }
+    document.getElementById('prevBtn').addEventListener('click', ()=>goTo(current-1));
+    document.getElementById('nextBtn').addEventListener('click', ()=>goTo(current+1));
+    thumbs.forEach((t)=>t.addEventListener('click', ()=>goTo(Number(t.dataset.slide))));
+    document.addEventListener('keydown', (e)=>{ if(e.key==='ArrowLeft') goTo(current-1); if(e.key==='ArrowRight') goTo(current+1); });
+    let startX = 0; const stage = document.getElementById('stage');
+    stage.addEventListener('touchstart', e=>{ startX = e.changedTouches[0].clientX; }, {passive:true});
+    stage.addEventListener('touchend', e=>{ const endX = e.changedTouches[0].clientX; const delta = endX - startX; if(Math.abs(delta)>40){ if(delta<0) goTo(current+1); else goTo(current-1); } }, {passive:true});
+  </script>
 </body>
 </html>
