@@ -1,89 +1,19 @@
 const params = new URLSearchParams(window.location.search);
 const whatsappNumber = "525610826034";
-
-const whatsappMessages = {
-  empresa:
-    "Hola Alberto, vi AXIA a través de la comunidad IPADE y quiero evaluar si puede tener sentido para mi empresa. Me gustaría coordinar un Diagnóstico AXIA de 20 minutos.",
-  referencia:
-    "Hola Alberto, vi AXIA a través de la comunidad IPADE y pensé en una empresa o persona de mi red a quien podría interesarle. Quiero coordinar la introducción contigo.",
-  fondeo:
-    "Hola Alberto, vi la opción de fondeo de VALIA y quiero conocer cómo funciona Capital Productivo, sus plazos, riesgos y condiciones."
+const messages = {
+  empresa: "Hola, Alberto. Vi AXIA a través de tu mensaje a la comunidad IPADE y quiero evaluar si puede tener sentido para mi empresa. Me gustaría coordinar un Diagnóstico AXIA de 20 minutos.",
+  referencia: "Hola, Alberto. Vi AXIA a través de la comunidad IPADE y pensé en una empresa o persona de mi red a quien podría interesarle. Quiero coordinar la introducción contigo.",
+  fondeo: "Hola, Alberto. Vi la opción de fondeo de VALIA y quiero conocer cómo funciona Capital Productivo, sus plazos, estructura y riesgos."
 };
-
-["utm_source", "utm_medium", "utm_campaign", "utm_content", "contact_id"].forEach((key) => {
-  const element = document.getElementById(key);
-  if (element) element.value = params.get(key) || "";
-});
-
-function buildWhatsAppUrl(intent = "empresa") {
-  let message = whatsappMessages[intent] || whatsappMessages.empresa;
-  const contactId = params.get("contact_id");
-  if (contactId) message += `\n\nReferencia de campaña: ${contactId}`;
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+function waUrl(intent="empresa") {
+  const tracking=[params.get("utm_source")?`Origen: ${params.get("utm_source")}`:"",params.get("utm_campaign")?`Campaña: ${params.get("utm_campaign")}`:"",params.get("contact_id")?`Referencia: ${params.get("contact_id")}`:""] .filter(Boolean).join(" · ");
+  const text=tracking?`${messages[intent]||messages.empresa}\n\n${tracking}`:(messages[intent]||messages.empresa);
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
 }
-
-document.querySelectorAll(".whatsapp-link").forEach((link) => {
-  const intent = link.dataset.waIntent || "empresa";
-  link.href = buildWhatsAppUrl(intent);
-  link.target = "_blank";
-  link.rel = "noopener";
-});
-
-const requestedInterest = params.get("interest");
-if (requestedInterest) {
-  document.querySelectorAll('input[name="interes"]').forEach((radio) => {
-    if (radio.value.toLowerCase().includes(requestedInterest.toLowerCase())) {
-      radio.checked = true;
-    }
-  });
-}
-
-const form = document.getElementById("leadForm");
-const nextInput = document.getElementById("nextUrl");
-
-if (form && nextInput) {
-  form.addEventListener("submit", () => {
-    const selected = form.querySelector('input[name="interes"]:checked');
-    const selectedValue = selected ? selected.value : "Evaluar AXIA para mi empresa";
-    let intent = "empresa";
-    if (selectedValue.includes("Referir")) intent = "referencia";
-    if (selectedValue.includes("fondeo")) intent = "fondeo";
-
-    const nextUrl = new URL(nextInput.value);
-    nextUrl.searchParams.set("intent", intent);
-    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "contact_id"].forEach((key) => {
-      const value = params.get(key);
-      if (value) nextUrl.searchParams.set(key, value);
-    });
-    nextInput.value = nextUrl.toString();
-  });
-}
-
-if (params.get("thanks") === "1" && form) {
-  const intent = params.get("intent") || "empresa";
-  let kicker = "SIGUIENTE PASO";
-  let title = "Gracias. Hablemos por WhatsApp.";
-  let copy = "Revisaremos si AXIA tiene sentido económico para tu empresa y coordinaremos una conversación de 20 minutos.";
-  let buttonLabel = "Hablar con Alberto";
-
-  if (intent === "referencia") {
-    kicker = "REFERENCIA";
-    title = "Gracias. Hagamos la introducción sencilla.";
-    copy = "Escríbele directamente a Alberto. Él toma el seguimiento y tú no necesitas explicar AXIA.";
-    buttonLabel = "Hacer la introducción";
-  } else if (intent === "fondeo") {
-    kicker = "FONDEO VALIA";
-    title = "Gracias. Abramos la conversación de capital.";
-    copy = "La conversación será separada del diagnóstico empresarial y se enfocará en Capital Productivo, plazos, estructura y riesgos.";
-    buttonLabel = "Hablar de fondeo con Alberto";
-  }
-
-  form.innerHTML = `
-    <div>
-      <span class="kicker">${kicker}</span>
-      <h2>${title}</h2>
-      <p>${copy}</p>
-      <a class="btn primary submit" href="${buildWhatsAppUrl(intent)}" target="_blank" rel="noopener">${buttonLabel}</a>
-      <p class="form-note">Te responde directamente Alberto Martínez.</p>
-    </div>`;
-}
+document.querySelectorAll(".whatsapp-link").forEach(a=>{a.href=waUrl(a.dataset.waIntent||"empresa")});
+["utm_source","utm_medium","utm_campaign","utm_content","contact_id"].forEach(k=>{const e=document.getElementById(k);if(e)e.value=params.get(k)||""});
+const requested=params.get("interest");
+if(requested) document.querySelectorAll('input[name="interes"]').forEach(r=>{if(r.value.toLowerCase().includes(requested.toLowerCase()))r.checked=true});
+const form=document.getElementById("leadForm"), next=document.getElementById("nextUrl");
+if(form&&next){form.addEventListener("submit",()=>{const v=form.querySelector('input[name="interes"]:checked')?.value||"";const intent=v.includes("Referir")?"referencia":v.toLowerCase().includes("fondeo")?"fondeo":"empresa";const u=new URL(next.value);u.searchParams.set("intent",intent);["utm_source","utm_medium","utm_campaign","utm_content","contact_id"].forEach(k=>{if(params.get(k))u.searchParams.set(k,params.get(k))});next.value=u.toString()})}
+if(params.get("thanks")==="1"&&form){const intent=params.get("intent")||"empresa";const data={empresa:["SIGUIENTE PASO","Gracias. Coordinemos 20 minutos.","Revisaremos si AXIA tiene sentido económico para tu empresa.","Coordinar por WhatsApp"],referencia:["REFERENCIA","Hagamos la introducción sencilla.","Escríbeme y te paso el texto exacto para presentar a la empresa.","Hacer la introducción"],fondeo:["FONDEO VALIA","Abramos la conversación de capital.","Revisaremos Capital Productivo, destino del recurso, plazos y riesgos.","Hablar de fondeo"]}[intent]||[];form.innerHTML=`<div><span class="kicker">${data[0]}</span><h2>${data[1]}</h2><p>${data[2]}</p><a class="btn primary submit" href="${waUrl(intent)}" target="_blank" rel="noopener">${data[3]}</a><p class="form-note">Te responde directamente Alberto Martínez.</p></div>`}
