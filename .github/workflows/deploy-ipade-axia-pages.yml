@@ -1,6 +1,11 @@
 name: Deploy IPADE AXIA landing to GitHub Pages
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/ipade-axia/**'
+      - '.github/workflows/deploy-ipade-axia-pages.yml'
   workflow_dispatch:
 
 permissions:
