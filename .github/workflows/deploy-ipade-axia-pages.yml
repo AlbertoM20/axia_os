@@ -1,4 +1,5 @@
 name: Deploy IPADE AXIA landing to GitHub Pages
+# Deployment source: docs/ipade-axia, root URL: /axia_os/
 
 on:
   push:
