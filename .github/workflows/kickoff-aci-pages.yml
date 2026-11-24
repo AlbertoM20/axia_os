@@ -24,8 +24,12 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Preparar sitio exclusivamente publico
+        run: |
+          mkdir -p site/kickoff-aci
+          cp kickoff-aci/index.html kickoff-aci/operaciones.html kickoff-aci/logo-valia.svg site/kickoff-aci/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: kickoff-aci
+          path: site
       - id: deployment
         uses: actions/deploy-pages@v4
