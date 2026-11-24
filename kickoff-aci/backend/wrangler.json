@@ -1,0 +1,11 @@
+{
+  "name": "axia-aci-intake",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-20",
+  "vars": {
+    "PUBLIC_ORIGIN": "https://albertom20.github.io"
+  },
+  "d1_databases": [
+    {"binding": "DB", "database_name": "axia-aci-intake", "database_id": "REEMPLAZAR_CON_ID_D1_REAL"}
+  ]
+}
