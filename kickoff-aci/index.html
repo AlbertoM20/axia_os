@@ -73,7 +73,7 @@ function calc(){
 }
 function summary(){if(!$('reqSummary'))return;let p=$('reqProduct').value;setText('reqSummary',p==='safe'?(lastSafe?'Ahorro: '+money(lastSafe.amount)+' por '+(lastSafe.frequency===52?'semana':'quincena')+'. Acumulado ilustrativo: '+money(lastSafe.total)+'.':'Ajusta primero tu simulación de ahorro.'):p==='advance'?(lastAdv?'Anticipo: recibirías '+money(lastAdv.want)+'; descuento estimado al corte '+money(lastAdv.deduction)+'.':'Ajusta primero la simulación de anticipo para respetar el límite.'): 'Credit: registro de interés para la próxima fase; no se presenta solicitud de crédito.');}
 document.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',calc));$('reqProduct').addEventListener('change',summary);
-const config=Object.freeze({api:'',source:'AXIA_ACI_20261125'});
+const params=new URLSearchParams(window.location.search);const channel=['web','qr','presencial','whatsapp','email'].includes(params.get('canal'))?params.get('canal'):'web';const config=Object.freeze({api:'',source:'AXIA_ACI_20261125',channel});
 // The public app never contains private recipient email or WhatsApp number.
 // An authorized backend must be provisioned and its public HTTPS API URL set in config.api.
 function readiness(){const enabled=/^https:\/\/[^/]+/.test(config.api);$('submitBtn').disabled=!enabled;if(!enabled){setText('sendStatus','Registro digital aún no habilitado. Solicita el registro asistido al equipo AXIA durante el evento. No se han enviado datos.');}}
@@ -82,10 +82,10 @@ const product=$('reqProduct').value,model=product==='safe'?lastSafe:product==='a
 if(product!=='credit_waitlist'&&!model){status.textContent='Corrige primero tu simulación.';return;}
 const phone=$('reqPhone').value.replace(/\D/g,''),email=$('reqEmail').value.trim(),name=$('reqName').value.trim();
 if(name.length<3||phone.length!==10||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Verifica nombre, teléfono de 10 dígitos y correo.';return;}
-const payload={product,name,phone,email,employeeReference:$('reqReference').value.trim(),consent:$('consent').checked,source:config.source,simulation:model,requestId:crypto.randomUUID()};
+const payload={product,name,phone,email,employeeReference:$('reqReference').value.trim(),consent:$('consent').checked,source:config.source,channel:config.channel,simulation:model,requestId:crypto.randomUUID()};
 $('submitBtn').disabled=true;status.textContent='Enviando registro…';
 try{const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),12000);let res=await fetch(config.api+'/api/intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctrl.signal});clearTimeout(timer);let j=await res.json();if(!res.ok||!j.folio)throw Error(j.error||'No se pudo confirmar');status.textContent='Registro recibido. Tu folio: '+j.folio+'. Guárdalo para el seguimiento.';$('form').reset();}
 catch(err){status.textContent='No se confirmó la recepción. NO se generó folio. Solicita el registro asistido en la mesa AXIA.';}finally{$('submitBtn').disabled=false;}
 });
-calc();readiness();
+calc();if(['safe','advance','credit_waitlist'].includes(params.get('producto'))){$('reqProduct').value=params.get('producto');}readiness();
 </script></body></html>
