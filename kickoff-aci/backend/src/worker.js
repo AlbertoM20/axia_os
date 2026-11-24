@@ -14,6 +14,7 @@ const uuidOk=s=>typeof s==='string'&&/^[a-f0-9-]{36}$/i.test(s);
 function check(body){
  if(!body||!productSet.has(body.product))return 'Producto inválido';
  if(!body.consent)return 'Se requiere consentimiento';
+ if(!['web','qr','presencial','whatsapp','email'].includes(body.channel))return 'Canal inválido';
  if(!uuidOk(body.requestId))return 'Identificador inválido';
  if(!/^[\p{L}\p{M}\s.'-]{3,90}$/u.test(String(body.name||'')))return 'Nombre inválido';
  if(!/^\d{10}$/.test(String(body.phone||'')))return 'Teléfono inválido';
@@ -30,7 +31,7 @@ function check(body){
 }
 async function notify(row,env){
  if(!env.NOTIFY_EMAIL||!env.RESEND_API_KEY||!env.MAIL_FROM)return {ok:false,error:'not_configured'};
- const body=['Nueva solicitud AXIA / ACI','Folio: '+row.folio,'Producto: '+row.product,'Nombre: '+row.name,'Telefono: '+row.phone,'Correo: '+row.email,'Referencia: '+(row.employee_reference||'—'),'Simulacion: '+row.simulation_json,'Registro: '+row.created_at].join('\n');
+ const body=['Nueva solicitud AXIA / ACI','Folio: '+row.folio,'Producto: '+row.product,'Canal: '+row.channel,'Nombre: '+row.name,'Telefono: '+row.phone,'Correo: '+row.email,'Referencia: '+(row.employee_reference||'—'),'Simulacion: '+row.simulation_json,'Registro: '+row.created_at].join('\n');
  try{
  const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({from:env.MAIL_FROM,to:[env.NOTIFY_EMAIL],subject:'AXIA ACI | Nueva solicitud '+row.folio,text:body})});
  const payload=await r.json().catch(()=>({}));
@@ -64,7 +65,7 @@ export default {async fetch(request,env,ctx){
    const rate=await env.DB.prepare("SELECT COUNT(*) AS count FROM requests WHERE email=? AND created_at > datetime('now','-15 minutes')").bind(email).first();
    if((rate?.count||0)>=3)return json({error:'Límite de intentos. Contacta a RH'},429,headers);
    const folio='ACI-'+new Date().toISOString().slice(2,10).replace(/-/g,'')+'-'+crypto.randomUUID().slice(0,8).toUpperCase();
-   try{await env.DB.prepare("INSERT INTO requests(request_id,folio,product,name,phone,email,employee_reference,simulation_json,source,consent_at,state,mail_status) VALUES(?,?,?,?,?,?,?,?,?,datetime('now'),'recibida','pendiente')").bind(body.requestId,folio,body.product,name,phone,email,reference,JSON.stringify(body.simulation||{}),body.source).run();}
+   try{await env.DB.prepare("INSERT INTO requests(request_id,folio,product,name,phone,email,employee_reference,simulation_json,source,channel,consent_at,state,mail_status) VALUES(?,?,?,?,?,?,?,?,?,?,datetime('now'),'recibida','pendiente')").bind(body.requestId,folio,body.product,name,phone,email,reference,JSON.stringify(body.simulation||{}),body.source,body.channel).run();}
    catch(e){return json({error:'No se pudo guardar la solicitud'},503,headers)}
    const row=await env.DB.prepare('SELECT * FROM requests WHERE folio=?').bind(folio).first();
    const emailResult=await notify(row,env);
@@ -74,12 +75,12 @@ export default {async fetch(request,env,ctx){
  if(url.pathname.startsWith('/api/admin/')){
    if(!(await adminAuth(request,env)))return json({error:'No autorizado'},401,headers);
    if(url.pathname==='/api/admin/requests'&&method==='GET'){
-     const list=await env.DB.prepare('SELECT folio,product,name,phone,email,employee_reference,simulation_json,created_at,state,assignee,mail_status,updated_at FROM requests ORDER BY id DESC LIMIT 1000').all();
+     const list=await env.DB.prepare('SELECT folio,product,channel,name,phone,email,employee_reference,simulation_json,created_at,state,assignee,mail_status,updated_at FROM requests ORDER BY id DESC LIMIT 1000').all();
      return json({rows:list.results},200,headers)
    }
    if(url.pathname==='/api/admin/export'&&method==='GET'){
-     const list=await env.DB.prepare('SELECT folio,product,name,phone,email,employee_reference,created_at,state,assignee,mail_status FROM requests ORDER BY id DESC LIMIT 3000').all();
-     const cols=['folio','product','name','phone','email','employee_reference','created_at','state','assignee','mail_status'];
+     const list=await env.DB.prepare('SELECT folio,product,channel,name,phone,email,employee_reference,created_at,state,assignee,mail_status FROM requests ORDER BY id DESC LIMIT 3000').all();
+     const cols=['folio','product','channel','name','phone','email','employee_reference','created_at','state','assignee','mail_status'];
      const csv='\uFEFF'+[cols.join(','),...(list.results||[]).map(row=>cols.map(c=>csvCell(row[c])).join(','))].join('\r\n');
      return new Response(csv,{status:200,headers:{...headers,'content-type':'text/csv; charset=utf-8','content-disposition':'attachment; filename="AXIA_ACI_solicitudes.csv"','cache-control':'no-store'}});
    }
