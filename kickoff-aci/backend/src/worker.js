@@ -23,8 +23,8 @@ function check(body){
  if(body.product!=='credit_waitlist'){
   const s=body.simulation;
   if(!s||typeof s!=='object')return 'Falta simulación';
-  if(body.product==='safe'&&(!num(s.amount,150,100000)||![24,52].includes(s.frequency)||!num(s.years,1,3)))return 'Simulación de ahorro inválida';
-  if(body.product==='advance'&&(!num(s.salary,0,1000000)||!num(s.days,0,30)||!num(s.want,1,1000000)||!num(s.cap,0,1000000)||s.want>s.cap))return 'Simulación de anticipo inválida';
+  if(body.product==='safe'&&(![24,52].includes(s.frequency)||!num(s.amount,s.frequency===52?150:300,100000)||!num(s.years,1,3)))return 'Simulación de ahorro inválida';
+  if(body.product==='advance'){const expectedCap=Math.max(0,(s.salary/s.cycle*s.days)*0.60-s.pending);if(![7,15,30].includes(s.cycle)||!num(s.salary,0,1000000)||!num(s.days,0,s.cycle)||!num(s.pending,0,1000000)||!num(s.want,1,1000000)||s.want>expectedCap+0.001)return 'Simulación de anticipo inválida';}
  }
  return null;
 }
