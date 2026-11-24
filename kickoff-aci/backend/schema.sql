@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS requests (
   request_id TEXT NOT NULL UNIQUE,
   folio TEXT NOT NULL UNIQUE,
   product TEXT NOT NULL,
+  channel TEXT NOT NULL DEFAULT 'web',
   name TEXT NOT NULL,
   phone TEXT NOT NULL,
   email TEXT NOT NULL,
