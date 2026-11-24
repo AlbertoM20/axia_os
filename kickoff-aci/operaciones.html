@@ -7,7 +7,7 @@
 </main><script>
 let rows=[],api='',token='';
 const el=id=>document.getElementById(id),msg=t=>el('message').textContent=t;
-function h(t){return String(t??'').replace(/[&<>"']/g,k=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[k]));}
+function h(t){return String(t??'').replace(/[&<>"']/g,k=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[k]));}
 async function call(path,opts={}){if(!api||!token)throw Error('Configura API y token');const res=await fetch(api+path,{...opts,headers:{...(opts.headers||{}),authorization:'Bearer '+token}});if(!res.ok)throw Error('Error HTTP '+res.status);return res;}
 function render(){
 const filtered=rows.filter(r=>!el('filter').value||r.state===el('filter').value);
