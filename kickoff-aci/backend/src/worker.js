@@ -23,7 +23,7 @@ function check(body){
  if(body.product!=='credit_waitlist'){
   const s=body.simulation;
   if(!s||typeof s!=='object')return 'Falta simulación';
-  if(body.product==='safe'&&(!num(s.amount,150,100000)||![26,52].includes(s.frequency)||!num(s.years,1,3)))return 'Simulación de ahorro inválida';
+  if(body.product==='safe'&&(!num(s.amount,150,100000)||![24,52].includes(s.frequency)||!num(s.years,1,3)))return 'Simulación de ahorro inválida';
   if(body.product==='advance'&&(!num(s.salary,0,1000000)||!num(s.days,0,30)||!num(s.want,1,1000000)||!num(s.cap,0,1000000)||s.want>s.cap))return 'Simulación de anticipo inválida';
  }
  return null;
